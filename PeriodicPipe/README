@@ -1,0 +1,4 @@
+Working case of a periodic pipe 
+Version: OpenFOAM 10 
+Solver: denseParticleFoamfvModels
+ Original denseParticleFoam solver was not updating the momentum source defined in fvModels. A source term in the Ueqn was added similarly to what is done in pimpleFOAM and now the update is working. The new solver is called denseParticleFoamfvModels
