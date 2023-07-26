@@ -1,0 +1,23 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      transportProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+continuousPhaseName   ;
+transportModel        Newtonian;
+
+rho         1.205; //air 1.205 kg/m^3; Ar 1.661 kg/m^3 @NTP (1atm, 20ºC)
+nu              1.506e-05; //air 1.82e-5 m^2/s; Ar 1.385e-5 m^2/s @NTP (1atm, 20ºC)
+
+// ************************************************************************* //
