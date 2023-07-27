@@ -1,0 +1,194 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  9
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    location    "constant";
+    object      cloudProperties;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+#include "$FOAM_CASE/constant/variables"
+
+type        collidingCloud;
+
+solution
+{
+    coupled         true; //true for influence of lagr. on euler. phase
+    transient       true; //true for transient sim.
+    cellValueSourceCorrection on; //correction of momentum transfer to Eulerian
+
+    interpolationSchemes
+    {
+        rho        cell;
+        U          cellPoint;
+        mu        cell;
+        alpha       cellPoint;
+        //curlUcDt        cell; //used for lift force calc.
+        //DucDt.air cell; //used for pressure Gradient force calc.
+        /*Available schemes: cell, cellPoint, cellPatchConstranined,
+                             cellPointFace, cellPointWallModified, pointMVC*/
+    }
+
+    averagingMethod dual; //only for MPPIC
+
+    integrationSchemes
+    {
+        U               Euler; //Euler or analytical
+    }
+
+    sourceTerms
+    {
+        schemes
+        {
+            U           semiImplicit 1;
+            //explicit or semiImplicit, relax.coeff for each field
+        }
+    }
+}
+
+constantProperties
+{
+    //parcelTypeId    1;
+
+    //rhoMin          1e-15;
+    //minParcelMass   1e-15;
+
+    rho0            2500;
+    youngsModulus   2.1e7;//2.1e9; 2.1e11;
+    poissonsRatio   0.3;
+
+    constantVolume  false;
+
+    //alphaMax        0.99; //not needed by collidingCloud
+}
+
+subModels
+{
+    particleForces
+    {
+        //sphereDrag;
+        gravity;
+        ErgunWenYuDrag
+        {
+            alphac    alpha;
+        }
+    }
+
+    injectionModels
+    {
+    
+           model1
+        {
+            type            cellZoneInjection;
+	    numberDensity 0.04e11;//Number of desired particles divided by the cellZone Volume 
+ 	    SOI      0; //Star of Injection
+ 	    cellZone	cellZoneInject;//cellZone defined for injection
+            massTotal                    3.686e-5; 
+            parcelBasisType          fixed;
+            nParticle                    10;
+    	    U0		(0 0 9);
+            sizeDistribution
+            {
+                type normal;
+                normalDistribution
+                {
+                    expectation 40e-6;    
+                    variance     10e-6;
+                    minValue     30e-6;
+                    maxValue    50e-6;
+                }
+            }
+         }
+     
+    }
+
+    dispersionModel none;
+
+    patchInteractionModel localInteraction;
+
+    localInteractionCoeffs
+    {
+        patches
+        (
+            walls
+            {
+                type rebound;
+                e    0.9;
+                mu   0.1;
+            }
+
+            "inlet|outlet"
+            {
+                type escape;
+            }
+        );
+    }
+
+    heatTransferModel none;
+
+    surfaceFilmModel none;
+
+    collisionModel pairCollision;
+
+    pairCollisionCoeffs
+    {
+        maxInteractionDistance  100e-6;
+
+        writeReferredParticleCloud no;
+
+        pairModel pairSpringSliderDashpot;
+
+        pairSpringSliderDashpotCoeffs
+        {
+            useEquivalentSize   no;
+            alpha               0.12; //function of restitution coeff
+            b                   1.5;  //=1->linear =3/2->Hertz
+            mu                  0.52; //friction coeff
+            cohesionEnergyDensity 200000;
+            collisionResolutionSteps 12;
+        };
+
+        wallModel wallLocalSpringSliderDashpot;
+
+        wallLocalSpringSliderDashpotCoeffs
+        {
+            useEquivalentSize no;
+            collisionResolutionSteps 12;
+            walls
+            {
+                youngsModulus   1e7;
+                poissonsRatio   0.23;
+                alpha           0.12; //function of restitution coeff
+                b               1.5;  //=1->linear =3/2->Hertz
+                mu              0.43; //friction coeff
+                cohesionEnergyDensity 0;
+                }
+        };
+
+        U     U;
+    }
+
+    stochasticCollisionModel none;
+
+    radiation off;
+}
+
+
+cloudFunctions
+{patchPostProcessing1
+{
+type patchPostProcessing;
+maxStoredParcels 1e07;
+patches ( outlet );
+}
+}
+
+
+// ************************************************************************* //

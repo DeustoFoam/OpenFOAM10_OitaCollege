@@ -1,0 +1,39 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+| =========                 |                                                 |
+| \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox           |
+|  \\    /   O peration     | Version:  2.2.1                                 |
+|   \\  /    A nd           | Web:      www.OpenFOAM.org                      |
+|    \\/     M anipulation  |                                                 |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    version     2.0;
+    format      ascii;
+    class       dictionary;
+    location    "system";
+    object      fvOptions;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+momentumSource
+{
+        type            massSource;
+
+        selectionMode   cellSet;
+        cellSet         massSource;
+
+        massFlowRate    7.57e-5;
+
+        fieldValues
+        {
+            U               (0 0 5);
+           // T               350;
+            //k               0.375;
+            //epsilon         14.855;
+            //p		0;
+        }
+        
+}
+
+
+// ************************************************************************* //
