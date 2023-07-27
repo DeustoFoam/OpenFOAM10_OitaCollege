@@ -3,4 +3,4 @@
 
 2.- Periodic pipe case simulation setup 
 
-3.- Pipe simulation with variations in parallel pyFoam setup
+3.- Pipe simulation with variations in parallel with pyFoam setup
