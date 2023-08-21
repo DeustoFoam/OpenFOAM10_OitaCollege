@@ -1,6 +1,6 @@
 # OpenFOAM 10 developments
 1.- denseParticleFoamFvModels Solver 
 
-2.- Periodic pipe case simulation setup 
+2.- Periodic pipe case simulation setup /coming soon
 
-3.- Pipe simulation with variations in parallel with pyFoam setup
+3.- Pipe simulation with variations in parallel with pyFoam setup  /coming soon
